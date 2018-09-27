@@ -19,6 +19,8 @@ tags:
   description: "Get the sum of answered calls by country and date."
 - name: "CallsByDuration"
   description: "Get the sum of calls by duration."
+- name: "AverageCallsTime"
+  description: "Get result of calls by average."
 schemes:
 - "http"
 paths:
@@ -190,6 +192,62 @@ paths:
       - CallCenterCalls_auth:
         - "read:CallsByDurationInformation"
       x-swagger-router-controller: "CallsByDuration"
+  /AverageCallsTime/getCallsbyAverage:
+    post:
+      tags:
+      - "AverageCallsTime"
+      summary: "Total answered calls filtered by country and date"
+      description: "This service returns the total of answered calls"
+      operationId: "getCallsbyAverage"
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "Service"
+        in: "formData"
+        description: "Name of the service"
+        required: true
+        type: "string"
+      - name: "Day"
+        in: "formData"
+        description: "Format YYYY-MM-DD"
+        required: true
+        type: "string"
+        format: "string"
+      - name: "Country"
+        in: "formData"
+        description: "Example: Brazil"
+        required: false
+        type: "string"
+      - name: "From"
+        in: "formData"
+        description: "Format HH:MM"
+        required: false
+        type: "string"
+      - name: "To"
+        in: "formData"
+        description: "Format HH:MM"
+        required: false
+        type: "string"
+      - name: "Threshold"
+        in: "formData"
+        description: "Number representing seconds"
+        required: false
+        type: "integer"
+      responses:
+        200:
+          description: "Successful operation!"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/AverageCallsTime"
+        400:
+          description: "Error...!"
+      security:
+      - CallCenterCalls_auth:
+        - "read:AverageCallsTimeInformation"
+      x-swagger-router-controller: "AverageCallsTime"
 securityDefinitions:
   CallCenterCalls_auth:
     type: "oauth2"
@@ -199,6 +257,7 @@ securityDefinitions:
       read:AbandonedCallInformation: "Abandoned calls information"
       read:AnsweredCallsInformation: "Answered calls information"
       read:CallsByDurationInformation: "Information of calls by duration"
+      read:AverageCallsTimeInformation: "Information of calls by average"
   api_key:
     type: "apiKey"
     name: "api_key"
@@ -249,6 +308,28 @@ definitions:
     xml:
       name: "Answered Calls"
   CallsByDuration:
+    type: "object"
+    properties:
+      Service:
+        type: "string"
+      Dat:
+        type: "string"
+      Country:
+        type: "string"
+        example: "null"
+      CallsAnswered:
+        type: "integer"
+    example:
+      Service: "ACARI"
+      Day: "2018-02-10"
+      Country: "Jamaica"
+      CallsAnswered: 100
+      From: "08:00"
+      To: "15:00"
+      Threshold: 45
+    xml:
+      name: "Calls by duration"
+  AverageCallsTime:
     type: "object"
     properties:
       Service:
