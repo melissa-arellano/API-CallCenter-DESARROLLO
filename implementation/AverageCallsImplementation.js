@@ -39,10 +39,10 @@ exports.put = function (service, day, country, from, to, threshold) {
 
             connectionBD.connect(function (error) {
                 if (error) {
-                    //console.log("\n --> Error al conectar a la base de datos")
+                    console.log("\n --> Error al conectar a la base de datos")
                     reject();
                 } else {
-                    //console.log('\n Conexion correcta a la base de datos');
+                    console.log('\n Conexion correcta a la base de datos');
                     resolve(connectionBD);
                 }
             });
@@ -65,9 +65,21 @@ exports.put = function (service, day, country, from, to, threshold) {
                     connectionBDParam.query(queryString, [fecha], function (err, rows, fields) {
                     console.log(queryString);
                         if (err) throw err;
-                        var horasSegundos = rows[0].HorasSegundos;
 
-                        console.log('Horas Segundos ' + horasSegundos);
+                        var horasSegundos = rows[0].HorasSegundos;
+                        var minutosSegundos = rows[0].MinutosSegundos;
+                        var segundos = rows[0].Segundos; 
+                        var cantidadLlamadas = rows[0].CantidadLlamadas;
+
+                        console.log('Horas Segundos: ' + horasSegundos);
+                        console.log('Minutos Segundos: '+ minutosSegundos);
+                        console.log('Segundos: ' + segundos);
+                        console.log('Cantidad de Llamadas: ' + cantidadLlamadas);
+
+                        var promedio = (horasSegundos + minutosSegundos + segundos)/cantidadLlamadas;
+                        console.log(promedio);
+                        var porcionPromedio = promedio.substring(1,2);
+                        console.log(porcionPromedio);
 
                         item = [];
                         for (var i in rows) {
@@ -75,11 +87,11 @@ exports.put = function (service, day, country, from, to, threshold) {
                             service = service;
                             day = fecha;
                             country = country;
-                            callsAbandoned = Total;
+                            AverageWaitingTimeOfCallsAnswered = horasSegundos;
                             from = null;
                             to = null;
                             threshold = limite;
-                            informacion = new datosObtenidos(service, day, country, callsAbandoned, from, to, threshold);
+                            informacion = new datosObtenidos(service, day, country, AverageWaitingTimeOfCallsAnswered, from, to, threshold);
                             item.push(informacion);
                         }
                         if (item != []) {
@@ -92,11 +104,11 @@ exports.put = function (service, day, country, from, to, threshold) {
             }
         }
 
-        function datosObtenidos(service, day, country, callsAnswered, from, to, threshold) {
+        function datosObtenidos(service, day, country, AverageWaitingTimeOfCallsAnswered, from, to, threshold) {
             this.service = service;
             this.day = day;
             this.country = country;
-            this.callsAnswered = callsAnswered;
+            this.AverageWaitingTimeOfCallsAnswered = AverageWaitingTimeOfCallsAnswered;
             this.from = from;
             this.to = to;
             this.threshold = threshold;
