@@ -196,8 +196,9 @@ paths:
     post:
       tags:
       - "AverageCallsTime"
-      summary: "Total answered calls filtered by country and date"
-      description: "This service returns the total of answered calls"
+      summary: "Average Time Answered Calls"
+      description: "This service returns average time answered calls and answered\
+        \ calls average waiting time"
       operationId: "getCallsbyAverage"
       consumes:
       - "application/x-www-form-urlencoded"
@@ -339,13 +340,16 @@ definitions:
       Country:
         type: "string"
         example: "null"
-      CallsAnswered:
+      AverageTalkTimeDuration:
+        type: "integer"
+      AverageWaitingTimeOfCallsAnswered:
         type: "integer"
     example:
       Service: "ACARI"
       Day: "2018-02-10"
       Country: "Jamaica"
-      CallsAnswered: 100
+      AverageTalkTimeDuration: 100
+      AverageWaitingTimeOfCallsAnswered: 200
       From: "08:00"
       To: "15:00"
       Threshold: 45

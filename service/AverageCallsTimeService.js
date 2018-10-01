@@ -2,8 +2,8 @@
 
 
 /**
- * Total answered calls filtered by country and date
- * This service returns the total of answered calls
+ * Average Time Answered Calls
+ * This service returns average time answered calls and answered calls average waiting time
  *
  * service String Name of the service
  * day String Format YYYY-MM-DD
@@ -13,31 +13,35 @@
  * threshold Integer Number representing seconds (optional)
  * returns List
  **/
+var AverageCallsImplementation = require('../implementation/AverageCallsImplementation');
 exports.getCallsbyAverage = function(service,day,country,from,to,threshold) {
   return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = [ {
-  "Service" : "ACARI",
-  "Day" : "2018-02-10",
-  "Country" : "Jamaica",
-  "CallsAnswered" : 100,
-  "From" : "08:00",
-  "To" : "15:00",
-  "Threshold" : 45
-}, {
-  "Service" : "ACARI",
-  "Day" : "2018-02-10",
-  "Country" : "Jamaica",
-  "CallsAnswered" : 100,
-  "From" : "08:00",
-  "To" : "15:00",
-  "Threshold" : 45
-} ];
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
-    }
+
+
+    AverageCallsImplementation.put(service,day,country,from,to,threshold).then((result) => {
+     /*var examples = {};
+
+      examples['application/json'] = [ {
+        "Service" : "GSS-USA",
+        "Day" : "2018-07-05",
+        "Country" : "MEXICO",
+        "AverageTalkTimeDuration" : 800,
+        "AverageWaitingTimeOfCallsAnswered" : 870,
+        "From" : "08:00",
+        "To" : "15:00",
+        "Threshold" : 45
+      }];*/
+    
+      if (Object.keys(result).length > 0) {
+        resolve(result);
+      } else {
+        resolve();
+      }
+    }).catch((err) => {
+      reject(err);
+    });
+    
   });
+
 }
 
