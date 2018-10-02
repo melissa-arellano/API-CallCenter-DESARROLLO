@@ -12,19 +12,10 @@ exports.put = function (service, day, country, from, to, threshold) {
             servicio = 'USA';
         }
         var fecha = day;
-        console.log('Fecha --> ' + fecha);
-
         var pais = country;
-        console.log('Pais --> ' + pais);
-
         var horaInicio = from;
-        console.log('Hora inicio --> ' + horaInicio);
-
         var horaFinal = to;
-        console.log('Hora Final --> ' + horaFinal);
-
         var limite = threshold;
-        console.log('Limite --> ' + limite);
 
         var mysql = require('mysql'); // Incluimos el modulo de MySQL
         // Conexion a la BD
@@ -39,10 +30,10 @@ exports.put = function (service, day, country, from, to, threshold) {
 
             connectionBD.connect(function (error) {
                 if (error) {
-                    console.log("\n --> Error al conectar a la base de datos")
+                    //console.log("\n --> Error al conectar a la base de datos")
                     reject();
                 } else {
-                    console.log('\n Conexion correcta a la base de datos');
+                    //console.log('\n Conexion correcta a la base de datos');
                     resolve(connectionBD);
                 }
             });
@@ -63,7 +54,6 @@ exports.put = function (service, day, country, from, to, threshold) {
                     var queryString = 'SELECT ((SUM(SUBSTR(Tiempo, 1,2)))*60*60) as HorasSegundos, SUM(SUBSTR(Tiempo, 4,2)*60) as MinutosSegundos, SUM(SUBSTR(Tiempo, 7,2)) as Segundos, COUNT(*) as CantidadLlamadas FROM tiemposesperallamadas WHERE Entrada LIKE "' + [fecha] + '%"';
                     //console.log(queryString);
                     connectionBDParam.query(queryString, [fecha], function (err, rows, fields) {
-                    console.log(queryString);
                         if (err) throw err;
 
                         var horasSegundos = rows[0].HorasSegundos;
@@ -71,16 +61,19 @@ exports.put = function (service, day, country, from, to, threshold) {
                         var segundos = rows[0].Segundos; 
                         var cantidadLlamadas = rows[0].CantidadLlamadas;
 
-
                         var promedio = (horasSegundos + minutosSegundos + segundos)/cantidadLlamadas;
                         var promedioString = promedio.toString();
-                        var porcionPromedio = promedioString.substring(0,2);
+                        var posicion = promedioString.indexOf('.'); 
+                        var porcionPromedio = promedioString.substring(0,posicion);
 
+                        var arreglo = porcionPromedio.split("");                       
+                        var tamanio = arreglo.length;
 
-                        
-                        var horaPromedio = '00:00:' + porcionPromedio;
-
-
+                        if(tamanio <= 1){
+                            var horaPromedio = '00:00:0' + porcionPromedio;
+                        }else{
+                            var horaPromedio = '00:00:' + porcionPromedio;
+                        }
 
                         item = [];
                         for (var i in rows) {
