@@ -41,7 +41,7 @@ exports.put = function (service, day, country, from, to, threshold) {
 
         // VALIDACIONES
 
-        // SI no recibe hora inicio y final 
+        // SI no recibe hora inicio, hora final, pais y limite
         if (servicio != null && fecha != null && pais == null && horaInicio == null && horaFinal == null && limite == null) {
             console.log('\nConsulta solo para SERVICIO Y FECHA');
 
@@ -58,20 +58,20 @@ exports.put = function (service, day, country, from, to, threshold) {
 
                         var horasSegundos = rows[0].HorasSegundos;
                         var minutosSegundos = rows[0].MinutosSegundos;
-                        var segundos = rows[0].Segundos; 
+                        var segundos = rows[0].Segundos;
                         var cantidadLlamadas = rows[0].CantidadLlamadas;
 
-                        var promedio = (horasSegundos + minutosSegundos + segundos)/cantidadLlamadas;
+                        var promedio = (horasSegundos + minutosSegundos + segundos) / cantidadLlamadas;
                         var promedioString = promedio.toString();
-                        var posicion = promedioString.indexOf('.'); 
-                        var porcionPromedio = promedioString.substring(0,posicion);
+                        var posicion = promedioString.indexOf('.');
+                        var porcionPromedio = promedioString.substring(0, posicion);
 
-                        var arreglo = porcionPromedio.split("");                       
+                        var arreglo = porcionPromedio.split("");
                         var tamanio = arreglo.length;
 
-                        if(tamanio <= 1){
+                        if (tamanio <= 1) {
                             var horaPromedio = '00:00:0' + porcionPromedio;
-                        }else{
+                        } else {
                             var horaPromedio = '00:00:' + porcionPromedio;
                         }
 
@@ -96,6 +96,75 @@ exports.put = function (service, day, country, from, to, threshold) {
                     })
                 })
             }
+        }
+
+        if (servicio != null && fecha != null && pais != null && horaInicio == null && horaFinal == null && limite == null) {
+            console.log("\nConsulta solo para SERVICIO, FECHA Y PAIS");
+        }
+
+        if (servicio != null && fecha != null && limite != null && pais == null && horaInicio == null && horaFinal == null) {
+            console.log("\nConsulta solo para SERVICIO, FECHA Y LIMITE\n");
+        }
+
+        if (servicio != null && fecha != null && limite != null && pais != null && horaInicio == null && horaFinal == null) {
+            console.log("\nConsulta solo para SERVICIO, FECHA, PAIS Y LIMITE");
+        }
+
+
+        // Si recibe hora inicio y final
+
+        if (servicio != null && fecha != null && pais != null && horaInicio != null && horaFinal != null && limite == null) {
+            console.log("\nConsulta solo para SERVICIO, FECHA, PAIS, HORA INICIO Y FINAL \n");
+        }
+
+        if (servicio != null && fecha != null && pais == null && horaInicio != null && horaFinal != null && limite != null) {
+            console.log("\nConsulta solo para SERVICIO, FECHA, LIMITE, HORA INICIO Y FINAL \n");
+        }
+
+        if (servicio != null && fecha != null && pais == null && horaInicio != null && horaFinal != null && limite == null) {
+            console.log("\nConsulta solo para SERVICIO, FECHA, HORA INICIO Y FINAL \n");
+        }
+
+        if (servicio != null && fecha != null && pais != null && horaInicio != null && horaFinal != null && limite != null) {
+            console.log("\n Consulta todos los parametros");
+        }
+
+
+        // Si recibe solo la hora inicial 
+
+        if (servicio != null && fecha != null && pais != null && horaInicio != null && horaFinal == null && limite == null) {
+            console.log("\n --> ERROR: Es necesario una hora final (viene pais)");
+        }
+
+        if (servicio != null && fecha != null && pais == null && horaInicio != null && horaFinal == null && limite != null) {
+            console.log("\n --> ERROR: Es necesario una hora final (viene limite)");
+        }
+
+        if (servicio != null && fecha != null && pais == null && horaInicio != null && horaFinal == null && limite == null) {
+            console.log("--> ERROR: Es necesario una hora final (falta pais y limite)");
+        }
+
+        if (servicio != null && fecha != null && pais != null && horaInicio != null && horaFinal == null && limite != null) {
+            console.log("\n --> ERROR: Es necesario una hora final (viene pais y limite)");
+        }
+
+
+        // Si recibe solo la hora final
+
+        if (servicio != null && fecha != null && pais != null && horaInicio == null && horaFinal != null && limite == null) {
+            console.log("\n --> ERROR: Es necesario una hora final inicial (viene pais)");
+        }
+
+        if (servicio != null && fecha != null && pais == null && horaInicio == null && horaFinal != null && limite != null) {
+            console.log("\n --> ERROR: Es necesario una hora inicial (viene limite)");
+        }
+
+        if (servicio != null && fecha != null && pais == null && horaInicio == null && horaFinal != null && limite == null) {
+            console.log("--> ERROR: Es necesario una hora inicial (falta pais y limite)");
+        }
+
+        if (servicio != null && fecha != null && pais != null && horaInicio == null && horaFinal != null && limite != null) {
+            console.log("\n --> ERROR: Es necesario una hora inicial (viene pais y limite)");
         }
 
         function datosObtenidos(service, day, country, AverageWaitingTimeOfCallsAnswered, from, to, threshold) {
