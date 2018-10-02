@@ -71,15 +71,16 @@ exports.put = function (service, day, country, from, to, threshold) {
                         var segundos = rows[0].Segundos; 
                         var cantidadLlamadas = rows[0].CantidadLlamadas;
 
-                        console.log('Horas Segundos: ' + horasSegundos);
-                        console.log('Minutos Segundos: '+ minutosSegundos);
-                        console.log('Segundos: ' + segundos);
-                        console.log('Cantidad de Llamadas: ' + cantidadLlamadas);
 
                         var promedio = (horasSegundos + minutosSegundos + segundos)/cantidadLlamadas;
-                        console.log(promedio);
-                        var porcionPromedio = promedio.substring(1,2);
-                        console.log(porcionPromedio);
+                        var promedioString = promedio.toString();
+                        var porcionPromedio = promedioString.substring(0,2);
+
+
+                        
+                        var horaPromedio = '00:00:' + porcionPromedio;
+
+
 
                         item = [];
                         for (var i in rows) {
@@ -87,7 +88,7 @@ exports.put = function (service, day, country, from, to, threshold) {
                             service = service;
                             day = fecha;
                             country = country;
-                            AverageWaitingTimeOfCallsAnswered = horasSegundos;
+                            AverageWaitingTimeOfCallsAnswered = horaPromedio;
                             from = null;
                             to = null;
                             threshold = limite;
