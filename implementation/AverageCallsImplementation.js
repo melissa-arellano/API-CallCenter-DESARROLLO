@@ -57,9 +57,13 @@ exports.put = function (service, day, country, from, to, threshold) {
                         if (err) throw err;
 
                         var horasSegundos = rows[0].HorasSegundos;
+                        console.log('Horas segundos: ' + horasSegundos);
                         var minutosSegundos = rows[0].MinutosSegundos;
+                        console.log('Minutos: ' + minutosSegundos);
                         var segundos = rows[0].Segundos;
+                        console.log('Segundos: ' + segundos);
                         var cantidadLlamadas = rows[0].CantidadLlamadas;
+                        console.log('Cantidad Llamadas: ' + cantidadLlamadas);
 
                         var promedio = (horasSegundos + minutosSegundos + segundos) / cantidadLlamadas;
                         var promedioString = promedio.toString();
@@ -123,6 +127,61 @@ exports.put = function (service, day, country, from, to, threshold) {
 
         if (servicio != null && fecha != null && pais == null && horaInicio != null && horaFinal != null && limite == null) {
             console.log("\nConsulta solo para SERVICIO, FECHA, HORA INICIO Y FINAL \n");
+            if (service == 'GSS-USA') {
+                country = 'Mexico';
+            }
+
+            var promesaQuery = (connectionBDParam) => {
+                return new Promise(function (resolve, reject) {
+                    var queryString = 'SELECT ((SUM(SUBSTR(Tiempo, 1,2)))*60*60) as HorasSegundos, SUM(SUBSTR(Tiempo, 4,2)*60) as MinutosSegundos, SUM(SUBSTR(Tiempo, 7,2)) as Segundos, COUNT(*) as CantidadLlamadas FROM tiemposesperallamadas WHERE Entrada LIKE "' + [fecha] + '%" AND Entrada BETWEEN "' + [fecha] + " " + [horaInicio] + '" AND "' + [fecha] + " " + [horaFinal] + '"';
+                    console.log(queryString);
+                    connectionBDParam.query(queryString, [fecha], function (err, rows, fields) {
+                        if (err) throw err;
+
+                        var horasSegundos = rows[0].HorasSegundos;
+                        console.log('Horas segundos: ' + horasSegundos);
+                        var minutosSegundos = rows[0].MinutosSegundos;
+                        console.log('Minutos: ' + minutosSegundos);
+                        var segundos = rows[0].Segundos;
+                        console.log('Segundos: ' + segundos);
+                        var cantidadLlamadas = rows[0].CantidadLlamadas;
+                        console.log('Cantidad Llamadas: ' + cantidadLlamadas);
+
+                        var promedio = (horasSegundos + minutosSegundos + segundos) / cantidadLlamadas;
+                        var promedioString = promedio.toString();
+                        var posicion = promedioString.indexOf('.');
+                        var porcionPromedio = promedioString.substring(0, posicion);
+
+                        var arreglo = porcionPromedio.split("");
+                        var tamanio = arreglo.length;
+
+                        if (tamanio <= 1) {
+                            var horaPromedio = '00:00:0' + porcionPromedio;
+                        } else {
+                            var horaPromedio = '00:00:' + porcionPromedio;
+                        }
+
+                        item = [];
+                        for (var i in rows) {
+                            //id = rows[i].id;
+                            service = service;
+                            day = fecha;
+                            country = country;
+                            AverageWaitingTimeOfCallsAnswered = horaPromedio;
+                            from = null;
+                            to = null;
+                            threshold = limite;
+                            informacion = new datosObtenidos(service, day, country, AverageWaitingTimeOfCallsAnswered, from, to, threshold);
+                            item.push(informacion);
+                        }
+                        if (item != []) {
+                            resolve(item)
+                        } else {
+                            reject()
+                        }
+                    })
+                })
+            }
         }
 
         if (servicio != null && fecha != null && pais != null && horaInicio != null && horaFinal != null && limite != null) {
